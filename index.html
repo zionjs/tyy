@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoshino Apis</title>
+
+<style>
+:root{
+  --bg:#050508;
+  --purple:#7c3aed;
+  --purple-dark:#5b21b6;
+  --neon:0 0 12px rgba(124,58,237,.8),
+         0 0 24px rgba(124,58,237,.6);
+  --text:#e5e7eb;
+  --muted:#a1a1aa;
+}
+
+*{box-sizing:border-box;font-family:system-ui}
+
+body{
+  margin:0;
+  background:radial-gradient(circle at top,#1a002b,#000);
+  color:var(--text);
+}
+
+.header{
+  text-align:center;
+  padding:22px;
+}
+.header h1{
+  margin:0;
+  color:var(--purple);
+  text-shadow:var(--neon);
+}
+
+.card{
+  max-width:420px;
+  margin:24px auto;
+  padding:20px;
+  border-radius:22px;
+  background:linear-gradient(180deg,#0b0214,#050508);
+  border:1px solid rgba(124,58,237,.3);
+  box-shadow:var(--neon);
+  opacity:0;
+  transform:translateY(40px);
+  transition:.8s;
+}
+.card.show{opacity:1;transform:none}
+
+.hero img{
+  width:100%;
+  border-radius:16px;
+  margin-bottom:12px;
+  box-shadow:var(--neon);
+}
+
+h2{margin:10px 0 4px}
+p{font-size:14px;color:var(--muted)}
+
+.endpoint{
+  background:rgba(124,58,237,.15);
+  border:1px solid rgba(124,58,237,.4);
+  padding:12px;
+  border-radius:12px;
+  margin:14px 0;
+  font-size:13px;
+  word-break:break-all;
+}
+
+label{
+  display:block;
+  margin-top:12px;
+  font-size:13px;
+  color:#c4b5fd;
+}
+
+input,textarea{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border-radius:12px;
+  border:1px solid rgba(124,58,237,.4);
+  background:#050508;
+  color:#fff;
+}
+
+input:focus,textarea:focus{
+  outline:none;
+  box-shadow:var(--neon);
+}
+
+button{
+  width:100%;
+  margin-top:16px;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--purple),var(--purple-dark));
+  color:#fff;
+  box-shadow:var(--neon);
+}
+
+button:hover{transform:scale(1.03)}
+
+.footer{
+  text-align:center;
+  font-size:12px;
+  padding:24px;
+  color:var(--muted);
+}
+
+/* Loading */
+.loading{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:9999;
+}
+
+.spinner{
+  width:70px;
+  height:70px;
+  border:4px solid rgba(124,58,237,.2);
+  border-top:4px solid var(--purple);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  box-shadow:var(--neon);
+}
+
+
+.loading p{margin-top:16px;color:#ddd6fe}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SOCIAL */
+.socials{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  margin-bottom:18px;
+}
+.socials a{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(124,58,237,.15);
+  border:1px solid rgba(124,58,237,.4);
+  box-shadow:var(--neon);
+  transition:.3s;
+}
+.socials a:hover{transform:scale(1.15)}
+.socials img{width:22px;height:22px}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Hoshino Apis</h1>
+</div>
+
+<!-- AI HD -->
+<div class="card">
+  <div class="hero">
+    <img src="https://raw.githubusercontent.com/zionjs0/whatsapp-media/main/file_1766322745032.jpg">
+  </div>
+  <h2>AI HD Enhancer</h2>
+  <p>Upgrade kualitas gambar ke HD.</p>
+  <div class="endpoint">/api/hd?url=</div>
+  <label>URL Gambar</label>
+  <input id="hd">
+  <button onclick="go('/api/hd?url=', hd.value)">Kirim HD</button>
+</div>
+<!--- TXT2VIDEO --->
+<div class="card">
+  <h2>Text to video/image</h2>
+  <p>Pilih mau generate gambar atau video dari teks.</p>
+
+  <div class="endpoint">/api/txt2?prompt=&type=</div>
+
+  <label>Prompt</label>
+  <textarea id="txtPrompt" placeholder="anime girl cyberpunk city neon lights"></textarea>
+
+  <label>Type</label>
+  <select id="txtType"
+    style="width:100%;padding:12px;border-radius:12px;
+    background:#050508;color:#fff;
+    border:1px solid rgba(124,58,237,.4)">
+    <option value="image">Image</option>
+    <option value="video">Video</option>
+  </select>
+
+  <button onclick="txtGenerate()">Generate</button>
+</div>
+
+<script>
+function txtGenerate(){
+  const p = txtPrompt.value
+  const t = txtType.value
+  if(!p) return alert('Prompt wajib diisi')
+  load(true)
+  setTimeout(()=>{
+    location.href =
+      '/api/txt2?prompt=' +
+      encodeURIComponent(p) +
+      '&type=' +
+      encodeURIComponent(t)
+  },1200)
+}
+</script>
+<!----- Castorice ---->
+<div class="card">
+  <h2>Castorice AI</h2>
+  <p>Asisten AI percakapan pintar & responsif.</p>
+
+  <div class="endpoint">/api/castorice?q=</div>
+
+  <label>Pertanyaan</label>
+  <textarea id="castoriceText" placeholder="Tanya apa aja..."></textarea>
+
+  <button onclick="castorice()">Tanya Castorice</button>
+</div>
+<script>
+function castorice(){
+  const q = castoriceText.value
+  if(!q) return alert('Pertanyaan wajib diisi')
+  load(true)
+  setTimeout(()=>{
+    location.href =
+      '/api/castorice?q=' +
+      encodeURIComponent(q)
+  },1200)
+}
+</script>
+<!----- ELEVENLABS ------>
+<div class="card">
+  <h2>🎙️ ElevenLabs Text to Speech</h2>
+  <p>Ubah teks jadi suara AI (ElevenLabs)</p>
+
+  <div class="endpoint">
+    /api/elevenlabs?text=&voice=&pitch=&speed=&key=
+  </div>
+
+  <label>Teks</label>
+  <textarea id="ttsText" placeholder="Masukkan teks..."></textarea>
+
+<label>🎙️ Model Suara</label>
+<select id="ttsVoice"
+  style="width:100%;padding:12px;border-radius:12px;
+  background:#050508;color:#fff;
+  border:1px solid rgba(124,58,237,.4)">
+  <option value="bella">Bella — Female Natural</option>
+  <option value="adam">Adam — Male Deep</option>
+  <option value="miku">Miku — Anime Style</option>
+  <option value="jokowi">Jokowi — Formal</option>
+  <option value="prabowo">Prabowo — Strong Voice</option>
+</select>
+
+<small style="color:#a78bfa;font-size:12px">
+  Pilih karakter suara yang paling cocok dengan teks
+</small>
+
+  <label>Pitch</label>
+  <input id="ttsPitch" type="number" value="0" step="0.1">
+
+  <label>Speed</label>
+  <input id="ttsSpeed" type="number" value="0.9" step="0.1">
+
+ <label>API Key</label>
+<input id="ttsKey" placeholder="Masukkan API Key">
+
+  <button onclick="runTTS()">Generate Voice</button>
+</div>
+
+<script>
+function runTTS(){
+  const text  = ttsText.value.trim()
+  const voice = ttsVoice.value
+  const pitch = ttsPitch.value
+  const speed = ttsSpeed.value
+  const key   = ttsKey.value.trim() // ← INI PENTING
+
+  if(!text) return alert('Teks wajib diisi')
+  if(!key) return alert('API Key wajib diisi')
+
+  // loading
+  const btn = document.querySelector('button')
+  btn.disabled = true
+  btn.innerText = '⏳ Generating...'
+
+  const url =
+    '/api/elevenlabs'
+    + '?text='  + encodeURIComponent(text)
+    + '&voice=' + encodeURIComponent(voice)
+    + '&pitch=' + encodeURIComponent(pitch)
+    + '&speed=' + encodeURIComponent(speed)
+    + '&key='   + encodeURIComponent(key)
+
+  // redirect
+  location.href = url
+}
+</script>
+<!----- AI ------->
+<div class="card">
+  <h2>⚡ AI Real-Time (JSON)</h2>
+  <p>Output JSON langsung di browser</p>
+
+  <div class="endpoint">
+    /api/ai?q=&prompt=
+  </div>
+
+  <label>Prompt (WAJIB)</label>
+  <textarea
+    id="aiPrompt"
+    placeholder="Masukkan system prompt..."
+  ></textarea>
+
+  <label>Pertanyaan</label>
+  <textarea
+    id="aiQuestion"
+    placeholder="Tulis pertanyaan kamu..."
+  ></textarea>
+
+  <button onclick="runAI()">Kirim</button>
+</div>
+
+<script>
+function runAI(){
+  const q = aiQuestion.value.trim()
+  const prompt = aiPrompt.value.trim()
+
+  if(!prompt) return alert('Prompt wajib diisi')
+  if(!q) return alert('Pertanyaan wajib diisi')
+
+  // redirect langsung → JSON mentah
+  location.href =
+    '/api/ai'
+    + '?q=' + encodeURIComponent(q)
+    + '&prompt=' + encodeURIComponent(prompt)
+}
+</script>
+<!-- REMOVE BACKGROUND -->
+<div class="card">
+  <h2>Remove Background</h2>
+  <p>Hapus background gambar otomatis.</p>
+
+  <div class="endpoint">/api/removebg?url=</div>
+
+  <label>URL Gambar</label>
+  <input id="removeBgUrl" placeholder="https://example.com/image.jpg">
+
+  <button onclick="removeBg()">Remove BG</button>
+</div>
+<script>
+function removeBg(){
+  const url = document.getElementById('removeBgUrl').value
+  if(!url) return alert('URL wajib diisi')
+
+  load(true)
+  setTimeout(()=>{
+    location.href = '/api/removebg?url=' + encodeURIComponent(url)
+  }, 1200)
+}
+</script>
+<!--- LUMA --->
+<div class="card">
+  <h2>Luma AI – Image to Video</h2>
+  <p>Ubah gambar jadi video AI (Luma).</p>
+
+  <div class="endpoint">
+    /api/luma?url=&key=
+  </div>
+
+  <label>API Key</label>
+  <input id="lumaKey" placeholder="input key">
+
+  <label>URL Gambar</label>
+  <input id="lumaUrl" placeholder="https://example.com/image.jpg">
+
+  <button onclick="runLuma()">Generate Video</button>
+</div>
+
+<script>
+function runLuma(){
+  const url = lumaUrl.value
+  const key = lumaKey.value || 'zionjs' // default
+
+  if(!url) return alert('URL gambar wajib diisi')
+
+  load(true)
+
+  setTimeout(()=>{
+    location.href =
+      '/api/luma?url=' +
+      encodeURIComponent(url) +
+      '&key=' +
+      encodeURIComponent(key)
+  }, 1200)
+}
+</script>
+<!--- Perplexity --->
+<div class="card">
+  <h2>Perplexity AI</h2>
+  <p>Cari jawaban realtime berbasis web & sumber terpercaya.</p>
+
+  <div class="endpoint">
+    /api/perplexity?q=&web=&social=&academic=&finance=
+  </div>
+
+  <label>Pertanyaan</label>
+  <textarea id="pxQuery" placeholder="contoh: berita terbaru indonesia"></textarea>
+
+  <label>Sumber</label>
+  <div style="display:flex;gap:12px;margin-top:8px;font-size:13px;color:#ddd6fe">
+    <label><input type="checkbox" id="pxWeb" checked> Web</label>
+    <label><input type="checkbox" id="pxSocial"> Social</label>
+    <label><input type="checkbox" id="pxAcademic"> Academic</label>
+    <label><input type="checkbox" id="pxFinance"> Finance</label>
+  </div>
+
+  <button onclick="perplexity()">Cari Jawaban</button>
+</div>
+<script>
+function perplexity(){
+  const q = pxQuery.value
+  if(!q) return alert('Pertanyaan wajib diisi')
+
+  const web = pxWeb.checked
+  const social = pxSocial.checked
+  const academic = pxAcademic.checked
+  const finance = pxFinance.checked
+
+  load(true)
+
+  setTimeout(()=>{
+    location.href =
+      '/api/perplexity?q=' + encodeURIComponent(q) +
+      '&web=' + web +
+      '&social=' + social +
+      '&academic=' + academic +
+      '&finance=' + finance
+  }, 1200)
+}
+</script>
+<!-- GEMINI AI -->
+<div class="card">
+  <h2>Hoshino AI (Gemini)</h2>
+  <p>Asisten AI pintar: coding, ngerap, analisa, dan info.</p>
+
+  <div class="endpoint">/api/gemini?text=</div>
+
+  <label>Pertanyaan</label>
+  <textarea id="geminiText" placeholder="contoh: buatkan endpoint express js"></textarea>
+
+  <button onclick="sendGemini()">Tanya Hoshino</button>
+</div>
+<script>
+function sendGemini(){
+  const text = geminiText.value.trim()
+  if(!text) return alert('Pertanyaan wajib diisi')
+
+  load(true)
+  setTimeout(()=>{
+    location.href = '/api/gemini?text=' + encodeURIComponent(text)
+  },1200)
+}
+</script>
+<!-- BANANA -->
+<div class="card">
+  <h2>AI Image Prompt</h2>
+  <p>Edit gambar dengan prompt.</p>
+  <div class="endpoint">/api/banana?url=&prompt=</div>
+  <label>URL Gambar</label>
+  <input id="burl">
+  <label>Prompt</label>
+  <textarea id="bprompt"></textarea>
+  <button onclick="banana()">Kirim Prompt</button>
+</div>
+<div class="card">
+  <h2>Photo to Anime</h2>
+  <p>Ubah foto jadi gaya anime.</p>
+
+  <div class="endpoint">/api/toanime?url=&style=</div>
+
+  <label>URL Gambar</label>
+  <input id="animeUrl" placeholder="https://example.com/photo.jpg">
+
+  <label>Style</label>
+  <select id="animeStyle"
+    style="width:100%;padding:12px;border-radius:12px;
+    background:#050508;color:#fff;border:1px solid rgba(124,58,237,.4)">
+    <option value="anime">Anime</option>
+    <option value="ghibli">Ghibli</option>
+    <option value="manga">Manga</option>
+    <option value="blocky">Blocky</option>
+    <option value="minimalist">Minimalist</option>
+  </select>
+
+  <button onclick="toAnime()">Convert Anime</button>
+</div>
+
+<script>
+function toAnime(){
+  const u=animeUrl.value
+  const s=animeStyle.value
+  if(!u) return alert('URL wajib diisi')
+  load(true)
+  setTimeout(()=>{
+    location.href='/api/toanime?url='
+      +encodeURIComponent(u)
+      +'&style='
+      +encodeURIComponent(s)
+  },1200)
+}
+</script>
+<!-- SKOLE -->
+<div class="card">
+  <h2>Skole AI</h2>
+  <p>Asisten AI untuk pelajar.</p>
+  <div class="endpoint">/api/skoleai?text=</div>
+  <label>Pertanyaan</label>
+  <textarea id="skole"></textarea>
+  <button onclick="go('/api/skoleai?text=', skole.value)">Tanya</button>
+</div>
+<!-- SOCIAL MEDIA (DITAMBAHKAN, TIDAK MENGUBAH) -->
+<div class="socials">
+  <a href="https://wa.me/6283191939584" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+  </a>
+  <a href="https://t.me/Zionn2009" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
+  </a>
+  <a href="https://www.youtube.com/@kyzocode2.009" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
+  </a>
+  <a href="https://www.instagram.com/ryzz2.009?igsh=MWM0d29xY282cmlzcg==" target="_blank">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+  </a>
+</div>
+<div class="footer">
+  © 2025 Hoshino Apis • ZionJS
+</div>
+
+<div class="loading" id="load">
+  <div class="spinner"></div>
+  <p>Processing AI...</p>
+</div>
+
+<script>
+const load=x=>document.getElementById('load').style.display=x?'flex':'none'
+
+function go(base,val){
+  if(!val) return alert('Input wajib diisi')
+  load(true)
+  setTimeout(()=>location.href=base+encodeURIComponent(val),1200)
+}
+
+function banana(){
+  const u=burl.value,p=bprompt.value
+  if(!u||!p) return alert('Lengkapi semua')
+  load(true)
+  setTimeout(()=>{
+    location.href='/api/banana?url='+encodeURIComponent(u)+'&prompt='+encodeURIComponent(p)
+  },1200)
+}
+
+document.querySelectorAll('.card').forEach(c=>{
+  new IntersectionObserver(e=>{
+    if(e[0].isIntersecting)c.classList.add('show')
+  }).observe(c)
+})
+</script>
+
+
+</body>
+</html>
